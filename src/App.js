@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PostItem from "./component/PostItem";
 import PostList from "./component/PostList";
 import PostForm from "./component/PostForm";
 import './styles/App.css'
@@ -17,12 +16,21 @@ function App() {
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
   }
+
+  const removePost = (post) => {
+    setPosts(posts.filter(p => p.id !== post.id))
+  }
   
   
   return (
     <div className="App">
       <PostForm create={createPost}/>
-      <PostList posts={posts} title="Список постов 1"/>
+      {posts.length != 0 
+        ?
+        <PostList remove={removePost} posts={posts} title="Список постов 1"/>
+        : <h1 style={{textAlign:'center'}}>Список постов пуст</h1>
+      }
+      
     </div>
   );
 }
