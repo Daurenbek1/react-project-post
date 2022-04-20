@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PostList from "./component/PostList";
 import PostForm from "./component/PostForm";
 import './styles/App.css'
 import MySelect from "./component/UI/select/MySelect";
+import MyInput from "./component/UI/input/MyInput";
 
 
 function App() {
@@ -16,9 +17,24 @@ function App() {
 
   const [selectedSort, setSelectedSort] = useState('')
 
+  const [searchQuery, setSearchQuery] = useState('')
+
+
+  const sortedPosts = useMemo(() => {
+    console.log('Отработала функция сортед пост')
+    if(selectedSort) {
+      return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+    } 
+    return posts
+  }, [selectedSort, posts])
+
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
   }
+
+  const sortedAndSearchPosts = useMemo(() => {
+    return sortedPosts.filter(post => post.title.toLowerCase().includes(searchQuery.toLocaleLowerCase()))
+  }, [searchQuery, sortedPosts])
 
   const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id))
@@ -26,7 +42,6 @@ function App() {
   
   const sortPosts = (sort) => {
     setSelectedSort(sort)
-    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
   }
   
   return (
@@ -41,9 +56,13 @@ function App() {
           ]}
           value={selectedSort}
           onChange={sortPosts}/>
-      {posts.length != 0 
+      <MyInput 
+          placeholder="поиск..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}/>
+      {sortedAndSearchPosts.length != 0 
         ?
-        <PostList remove={removePost} posts={posts} title="Список постов 1"/>
+        <PostList remove={removePost} posts={sortedAndSearchPosts} title="Список постов 1"/>
         : <h1 style={{textAlign:'center'}}>Список постов пуст</h1>
       }
       
