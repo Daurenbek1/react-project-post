@@ -4,7 +4,9 @@ import PostForm from "./component/PostForm";
 import './styles/App.css'
 import MySelect from "./component/UI/select/MySelect";
 import MyInput from "./component/UI/input/MyInput";
+import MyModal from './component/UI/MyModal/MyModal'
 import PostFilter from "./component/PostFilter";
+import MyButton from "./component/UI/button/MyButton";
 
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
 
   const [filter, setFilter] = useState({sort:'', query:''})
 
+  const [modal, setModal] = useState(false)
+
   const sortedPosts = useMemo(() => {
     console.log('Отработала функция сортед пост')
     if(filter.sort) {
@@ -28,6 +32,7 @@ function App() {
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
+    setModal(false)
   }
 
   const sortedAndSearchPosts = useMemo(() => {
@@ -42,7 +47,10 @@ function App() {
   
   return (
     <div className="App">
-      <PostForm create={createPost}/>
+      <MyButton onClick={() => setModal(true)}>Создать пользователя</MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost}/>
+      </MyModal>
       <hr style={{margin: '15px 0'}}/>
       <PostFilter filter={filter} setFilter={setFilter}/>  
       <PostList remove={removePost} posts={sortedAndSearchPosts} title="Список постов 1"/>
