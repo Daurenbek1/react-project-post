@@ -7,41 +7,31 @@ import MyInput from "./component/UI/input/MyInput";
 import MyModal from './component/UI/MyModal/MyModal'
 import PostFilter from "./component/PostFilter";
 import MyButton from "./component/UI/button/MyButton";
+import { usePosts } from "./hooks/usePosts"
 
 
 function App() {
 
-  const [posts, setPosts] = useState([
-    {id:1, title:'JS', body: 'description'},
-    {id:2, title:'JAVA', body: 'description'},
-    {id:3, title:'C#', body: 'description'},
-    {id:4, title:'Python', body: 'description'}
-  ])
+    const [posts, setPosts] = useState([])
 
-  const [filter, setFilter] = useState({sort:'', query:''})
+    const [filter, setFilter] = useState({ sort: '', query: '' })
 
-  const [modal, setModal] = useState(false)
+    const [modal, setModal] = useState(false)
+    const sortedAndSearchPosts = usePosts(posts, filter.sort, filter.query)
 
-  const sortedPosts = useMemo(() => {
-    console.log('Отработала функция сортед пост')
-    if(filter.sort) {
-      return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
-    } 
-    return posts
-  }, [filter.sort, posts])
 
-  const createPost = (newPost) => {
-    setPosts([...posts, newPost])
-    setModal(false)
-  }
 
-  const sortedAndSearchPosts = useMemo(() => {
-    return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLocaleLowerCase()))
-  }, [filter.query, sortedPosts])
+    const createPost = (newPost) => {
+        setPosts([...posts, newPost])
+        setModal(false)
+    }
 
-  const removePost = (post) => {
-    setPosts(posts.filter(p => p.id !== post.id))
-  }
+
+
+    const removePost = (post) => {
+        setPosts(posts.filter(p => p.id !== post.id))
+    }
+
   
  
   
